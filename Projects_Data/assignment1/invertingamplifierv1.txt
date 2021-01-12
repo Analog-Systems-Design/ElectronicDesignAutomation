@@ -1,0 +1,106 @@
+* Inverting Amplifier
+* HishamElreedy
+*----------------------------------------------------------
+*	Circuit Description
+*----------------------------------------------------------
+*	Amplifies the signal by a factor of 9 and
+*	a phase shift of 180 degrees
+*----------------------------------------------------------
+*	Parameters and Models
+*----------------------------------------------------------
+*	Mosfet Model
+*----------------------------------------------------------
+*.model nm NMOS level=1 VT0=0.776 KP=55.84e-6 LAMBDA=0.025
+*.model pm PMOS level=1 VT0=-0.858 KP=23.51e-6 LAMBDA=0.055
+.include 180nm.txt
+*----------------------------------------------------------
+*	Ideal Opamp Model
+*----------------------------------------------------------
+.subckt idealopamp plus minus out gnd
+E1 out gnd plus minus
+.ENDS idealopamp
+*----------------------------------------------------------
+*	Folded Cascode Opamp Model
+*----------------------------------------------------------
+.subckt nonidealopamp 1 2 7 10 11 12 13 14
+M1 4 1 3 11 nm W=47.67u L=600n
+M2 5 2 3 11 nm W=47.67u L=600n
+M3 3 14 11 11 nm W=56.175u L=600n
+M4 4 12 10 10 pm W=62.8u L=600n
+M5 5 12 10 10 pm W=62.8u L=600n
+M6 6 13 4 10 pm W=62.8u L=600n
+M7 7 13 5 10 pm W=62.8u L=600n
+M8 6 6 8 11 nm W=31.4u L=600n
+M9 7 6 9 11 nm W=31.4u L=600n
+M10 8 8 11 11 nm W=47.67u L=600n
+M11 9 8 11 11 nm W=47.67u L=600n
+.ENDS idealopamp
+*----------------------------------------------------------
+*	Biasing Circuit (Current Mirrors)
+*----------------------------------------------------------
+.subckt bias1 sup bias gnd
+Idc sup bias 40uA
+M1 bias bias gnd gnd nm W=2u L=700n
+.ends bias1
+
+.subckt bias2 sup bias gnd
+Idc sup bias 40uA
+M1 bias bias gnd gnd nm W=500n L=700n
+.ends bias2
+
+.subckt bias3 sup bias gnd
+Idc sup bias 80uA
+M1 bias bias gnd gnd nm W=1u L=700n
+.ends bias3
+*-------------------------------------------------------------
+*	Full Opamp Openloop
+*-------------------------------------------------------------
+.subckt opampopenloop V1 V2 out
+*	Signal Sources
+*----------------------------------------------------------
+*----Supply-----------------------------------------------
+VDD vdd gnd DC 1.8V
+VSS vss gnd DC 0V
+*----Biasing----------------------------------------------
+*Xb1 vdd vb1 gnd bias1
+*Xb2 vdd vb2 gnd bias2
+*Xb3 vdd vb3 gnd bias3
+Vb1 vb1 gnd DC 1.35V
+Vb2 vb2 gnd DC 0.75V
+Vb3 vb3 gnd DC 0.37V
+*------Circuit Parameters----------------------------------------
+Xop1 V1 V2 out vdd vss vb1 vb2 vb3 nonidealopamp
+Cout out gnd 1p
+.Ends opampopenloop
+
+*----------------------------------------------------------
+*	Open Loop Stimulus and Simulation
+*----------------------------------------------------------
+*------Common Mode-----------------------------------------
+*Vcm mid gnd DC 0.9
+*-----Differential Input-----------------------------------------
+*V1 plus mid AC 0.5 0 SIN 0 1E-3 10
+*V2 minus mid AC -0.5 0 SIN 0 -1E-3 10
+*------------------------------------------------------------
+*Xop1 plus minus out opampopenloop
+*---------------------------------------------------------
+*	Simulation
+*---------------------------------------------------------
+*-----AC Analysis------------------------------------------
+*.AC dec 10 0.01 150MEG
+
+
+*------------------------------------------------------------
+*	Closed Loop Stimulus and Simulation
+*------------------------------------------------------------
+R2 minus out 9k
+R1 in minus 1k
+Vi in gnd DC 1V
+Xop1 gnd in out opampopenloop
+.tf V(out) Vi
+.PROBE
+*Vi in gnd SIN 0 1E-3 10
+*.op
+*.tran 1ps 1s
+*.plot V(plus)-1.65 V(minus)-1.65
+.end

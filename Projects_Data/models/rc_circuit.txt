@@ -1,0 +1,22 @@
+* rc.sp
+* HishamElreedy
+* Find Response of RC Circuit to rising input
+
+*----------------------------------------------------------
+*	Parameters and Models
+*----------------------------------------------------------
+* instruct HSPICE to write the results for use with a waveform viewer
+*.option post
+*----------------------------------------------------------
+*	Simulation Netlist
+*----------------------------------------------------------
+Vin		in		gnd		pwl		0ps 0 100ps 0 150ps 1.0 1ns 1.0
+R1		in		out		2k
+C1		out		gnd		100f
+
+*---------------------------------------------------------
+*	Stimulus
+*---------------------------------------------------------
+.tran 20ps 1ns
+.plot v(in) v(out)
+.end
