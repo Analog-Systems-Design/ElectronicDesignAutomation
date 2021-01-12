@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Analog Integrated Systems</title>
+    <title>Electronic Design Automation</title>
     <link href="https://fonts.googleapis.com/css?family=Voces" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="css/common.css"/>
     <link rel="stylesheet" href="css/style.css"/>
@@ -40,6 +40,19 @@
             font-size: small;
             padding-left: 0;
         }
+        .solution{
+            padding: 4px 12px;
+            background: #FDFEFB;
+            border-radius: 4px;
+            border: 1px solid #D7D8C8;
+            overflow: auto;
+            overflow-y: hidden;
+            margin-bottom: 32px;
+        }
+        .sol{
+            font-size: large;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
     </style>
     <script src="js/circuit.js"></script>
         
@@ -60,7 +73,139 @@
         </header>
     <section>
         <h1>Introduction</h1>
-        
+        <h1>Objectives</h1>
+        <ol>
+            <li>Create Behavioral Model for an op-amp</li>
+            <li>Write and Analyze SPICE Netlists</li>
+            <li>Run and analyze different types of simulations (TF,AC,TRAN)</li>
+            <li>Explain the relation between negative-feedback closed-loop parameters and open-loop parameters</li>
+            <li>Perform basic hand analysis and compare it with simulation results</li>
+        </ol>
+        <h1>Assignment 1</h1>
+        <h2>Problem 1</h2>
+        <p>
+            Write a SPICE subcircuit that describes an op-amp with an open-loop gain of 1e4
+            and a UGF of 10MHz. Use comments generously to describe every line of the netlist.
+            Report the SPICE subcircuit and explain how you chose the circuit parameters. 
+        </p>
+        <div class="solution">
+            <span class="sol">Specs</span>
+            <ul>
+                <li>Open-Loop Gain: \(40dB\)</li>
+                <li>UGF: \(10MHz\)</li>
+                <li>Closed loop gain: \(9\)</li>
+            </ul>
+        </div>
+        <span class="sol">I will use Single-ended Folded Cascode for Amplifier model</span>
+        <figure>
+            <img src="images/circuitfolded.png"/>
+            <figcaption>Single Ended Folded Cascode OpAmp</figcaption>
+        </figure>
+        <div class="solution">
+            <span class="sol">assume Given:</span>
+            <ul>
+                <li>ProcessNode: \(TSMC180nm\)</li>
+                <li>Supply Voltage: \(1.8V\)</li>
+                <li>single current source: \(25\mu A\)</li>
+                <li>Load: \(2pF\)</li>
+                <li>L=\(200nm\)</li>
+            </ul>
+        </div>
+        <div class="solution">
+        <h3>Small Signal Analysis</h3>    
+        <p>
+            $$GBW=f_u=G_mR_{out}*{1 \over{2\pi R_{out}C_{out}}}={G_m \over {2\pi C_L}}$$
+            $$G_m={g_m}_{1}=2\pi C_L f_u=0.1257mS$$
+            so in below figure we extracted gm1 by sweeping on different values of w where we settled at w=500nm 
+            which gave a transistor efficiency=12 and a current of 10.4\(\mu A\) and \(V*=600mV\)
+        </p>
+        <figure>
+            <img src="images/gm1choose.png"/>
+            <figcaption>Choosing gm1 at maximum transistor efficiency</figcaption>
+        </figure>
+        <p>    
+            $$Gain=G_mR_{out}={{g_m}_{1,2}{{{g_m}_{7,9}{r_o}^2}\over 3}}=10^4$$
+            $$assume \space {g_m}_{7,9}={g_m}_{1,2}=g_m$$
+            $$gmr_o=\sqrt{3*10^4}=173$$
+            from graph we get that V*=657mV and Width from sweeping=2um
+        </p>
+        <figure>
+            <img src="images/dcgainrochoose.png"/>
+            <figcaption>Intrinsicgain(gmro) vs Vgs</figcaption>
+        </figure>
+        <p>
+            We found from both graphs that suitable \(g_m=0.1294mS\) so we formed the following 
+            params from testbench
+        </p>
+        </div>
+        <div class="solution">
+            <h3>Large Signal Analysis</h3>
+            <ol>
+                <li>Determine \(V^*\)</li>
+                $$[{({V_{out,min}>(V_{th}+V^*)}) \cap {(V_{out,min}>2V^*)}} ]= {[V_{out,min}>{V_{th}+V^*}]}$$
+                $$V_{out,max}<{V_{DD}-2V^*}$$
+                $$Assume \space Output \space Swing= {V_{out,max} - V_{out,min}}=V_{DD}-3V^*-V_{th}>1.5V_{pp}$$
+                $$choose \space V^*=0.3V$$
+                <li>Determine Vb1 from \(V^*\) and \(V_{DS}=V^*+100mV\)</li>
+                $$V_{DD}-V_{b1}=V^*+V_{th}+0.1$$
+                $$V_{b1}=1.35V$$
+                <li>Determine Vb2 from Vb1, overdrive voltage and \(V_{DS}=V^*+100mV\)</li>
+                $$V_{b2}=2V^*=0.75V$$
+                <li>Determine Vb0</li>
+                $${350mV}<{V_g \space of \space M_o}<{400mV}$$
+                if we choose max we will have max GBW and smallest phase margin and if we take min opposite will occur so it is better
+                to choose value in between like 370mV
+            </ol>
+        </div>
+        <h2>Problem 2</h2>
+        <p>
+            Use the previous subcircuit to write a netlist of a non-inverting amplifier. The
+            feedback resistance is 9kOhm and the other resistance is 1kOhm. Use a 1V DC
+            input. Use comments generously to describe every line of the netlist.
+            Run transfer function (TF)analysis. Report a snapshot of the SPICE output file.
+            Justify the output.
+        </p>
+        <h2>Problem 3</h2>
+        <p>
+            Change the input to be a sine wave with 1V amplitude and 1kHz frequency. Run
+            transient analysis for two complete periods. Use a time step = period/50.
+            Report results (Vsig and Vout vs time). Clearly annotate the peak value of Vsig and
+            Vout in the figure
+        </p>
+        <h2>Problem 4</h2>
+        <p>
+            How much is the voltage gain? Compare the voltage gain acquired from hand
+            analysis, TF analysis, and TRAN analysis in a table. Comment
+        </p>
+        <h2>Problem 5</h2>
+        <p>
+            Report the waveform of the differential input of the op-amp. Clearly annotate the
+            peak value in the figure. What is the amplitude of this signal? Why (explain with
+            hand-analysis)?
+        </p>
+        <h2>Problem 6</h2>
+        <p>
+            Repeat the previous step but with input frequency equal to the UGF. What is the
+            amplitude of this signal? Why (explain with hand-analysis)?
+        </p>
+        <h2>Problem 7</h2>
+        <p>
+            Run AC analysis to plot the frequency response of the previous non-inverting
+            amplifier (use an AC source). Use parametric sweep for the feedback resistance
+            with two values (9k and 4k).
+            Report the gain in dB vs frequency (log-log scale). Clearly annotate the DC gain, the
+            3dB high cutoff frequency, and the GBW (UGF) in the figure
+        </p>
+        <h2>Problem 8</h2>
+        <p>
+            If you increase the input amplitude in AC analysis and transient analysis, do you
+            expect to see clipping in the output? Why?
+        </p>
+        <h2>Problem 9</h2>
+        <p>
+            Compare the DC gain, the 3dB high cutoff frequency, and the GBW (UGF) from hand
+            analysis and AC analysis in a table. Comment.
+        </p>
     </section>
 <footer>
     <p><small>Hosted on <a href="https://www.github.com/hishamelreedy/">GitHub Pages</a> by HishamElreedy</small></p>
