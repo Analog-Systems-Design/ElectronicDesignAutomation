@@ -1,0 +1,53 @@
+T-Spice - Tanner SPICE
+Version 2019.2
+License validated.
+Product Release ID: T-Spice Win64 2019.2.20190514.20:23:23
+Copyright (C)1988-2019 Mentor, a Siemens Business
+
+Input folder         = D:\Career_Organized\AnalogSystemsDesign\ElectronicDesignAutomation\Projects_Data\models\
+Output folder        = D:\Career_Organized\AnalogSystemsDesign\ElectronicDesignAutomation\Projects_Data\models\icchargeideal
+
+	Parsing "D:\Career_Organized\AnalogSystemsDesign\ElectronicDesignAutomation\Projects_Data\models\icchargeideal.txt"
+
+Start of icchargeideal.txt
+Loaded MOSLevel2 model library, SPICE Level 2 MOSFET
+Warning : "icchargeideal.txt" line 11 Model pm - Unknown model parameter "VT0" will be ignored
+Warning : "icchargeideal.txt" line 30 Device Mcharge - Source perimeter (PS) is zero
+Warning : "icchargeideal.txt" line 30 Device Mcharge - Drain perimeter (PD) is zero
+
+General options:
+        threads = 1
+
+ Device and node counts:
+              MOSFETs -       1
+    MOSFET geometries -       1
+           Capacitors -       1
+            Resistors -       2
+      Voltage sources -       2
+      Current sources -       1
+                 VCVS -       1
+   Subckt Definitions -       2
+     Subckt Instances -       1
+     Unique Instances -       1
+    Model Definitions -       2
+      Computed Models -       1
+    Independent nodes -       5
+       Boundary nodes -       3
+          Total nodes -       8
+*** 3 WARNING MESSAGES GENERATED DURING SETUP
+
+
+	Opening simulation database "D:\Career_Organized\AnalogSystemsDesign\ElectronicDesignAutomation\Projects_Data\models\icchargeideal.tsim"
+Warning : Newton solver has failed due to extremely large node voltages.
+        : If the circuit has very high gain and extremely large voltages (>1000V) are expected,
+        : then you may use '.option vmax=0' to disable this check.
+Conventional DC operating point computation failed
+Final gmin value = 1e-12, dcstep = 0
+Gmin stepping succeeded
+
+Transient Analysis           0.44 seconds
+Overhead                     0.64 seconds
+-----------------------------------------
+Total                        1.09 seconds
+
+Simulation completed	with  4 Warnings

@@ -1,0 +1,69 @@
+* Task 1
+* Author: Hisham Elreedy
+*-----------------------------------------------
+*-----------------------------------------------
+*	Requirement 1
+*-----------------------------------------------
+.subckt nonidealopamp plus minus out
+E1 mid gnd plus minus 1e4
+R1 mid out 4k
+C1 out gnd 3.97pf
+.ENDS nonidealopamp
+
+*-------------------------------------------------
+*	Requirement 2
+*-------------------------------------------------
+*Xop1 gnd minus out nonidealopamp
+*R1 in minus 1k
+*R2 minus out 9k
+*Vin in gnd 1V
+*.tf V(out) Vin
+*.probe
+
+*-------------------------------------------------
+*	Requirement 3
+*-------------------------------------------------
+*Xop1 gnd minus out nonidealopamp
+*R1 in minus 1k
+*R2 minus out 9k
+*Vin in gnd AC 1 0 SIN 0 1V 1k
+*.tran 200us 1ms
+
+*-------------------------------------------------
+*	Requirement 4
+*-------------------------------------------------
+
+
+*-------------------------------------------------
+*	Requirement 5
+*-------------------------------------------------
+*Xop2 plus minus out nonidealopamp
+*Vin plus minus DC 0.5
+*R1 out gnd 1
+*.dc Vin -5 5 0.001
+
+*-------------------------------------------------
+*	Requirement 6
+*-------------------------------------------------
+Vin in gnd AC 1 0 SIN 0 1V 10e3k
+.tran 1ps 0.1us
+
+*-------------------------------------------------
+*	Requirement 7
+*-------------------------------------------------
+*Xop2 plus minus out nonidealopamp
+*Vpos plus gnd AC 0.5
+*Vmin minus gnd AC -0.5
+*.AC dec 10 0.001 150MEG
+
+*-------------------------------------------------
+*	Requirement 8
+*-------------------------------------------------
+*No because I modeled opamp with ideal linear model
+*that never saturates
+*-------------------------------------------------
+*	Requirement 9
+*-------------------------------------------------
+
+.end
+

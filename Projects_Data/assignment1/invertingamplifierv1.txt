@@ -10,8 +10,8 @@
 *----------------------------------------------------------
 *	Mosfet Model
 *----------------------------------------------------------
-*.model nm NMOS level=1 VT0=0.776 KP=55.84e-6 LAMBDA=0.025
-*.model pm PMOS level=1 VT0=-0.858 KP=23.51e-6 LAMBDA=0.055
+*.model nm NMOS level=1 VT0=0.3 KP=55.84e-6 LAMBDA=0.025
+*.model pm PMOS level=1 VT0=-0.4 KP=23.51e-6 LAMBDA=0.055
 .include 180nm.txt
 *----------------------------------------------------------
 *	Ideal Opamp Model
@@ -67,7 +67,7 @@ VSS vss gnd DC 0V
 *Xb3 vdd vb3 gnd bias3
 Vb1 vb1 gnd DC 1.35V
 Vb2 vb2 gnd DC 0.75V
-Vb3 vb3 gnd DC 0.37V
+Vb3 vb3 gnd DC 0.39V
 *------Circuit Parameters----------------------------------------
 Xop1 V1 V2 out vdd vss vb1 vb2 vb3 nonidealopamp
 Cout out gnd 1p
@@ -77,10 +77,10 @@ Cout out gnd 1p
 *	Open Loop Stimulus and Simulation
 *----------------------------------------------------------
 *------Common Mode-----------------------------------------
-*Vcm mid gnd DC 0.9
+*Vcm mid gnd DC 0.9V
 *-----Differential Input-----------------------------------------
-*V1 plus mid AC 0.5 0 SIN 0 1E-3 10
-*V2 minus mid AC -0.5 0 SIN 0 -1E-3 10
+*V1 plus mid AC 0.5 0
+*V2 minus mid AC -0.5 0
 *------------------------------------------------------------
 *Xop1 plus minus out opampopenloop
 *---------------------------------------------------------
@@ -89,18 +89,19 @@ Cout out gnd 1p
 *-----AC Analysis------------------------------------------
 *.AC dec 10 0.01 150MEG
 
-
 *------------------------------------------------------------
 *	Closed Loop Stimulus and Simulation
 *------------------------------------------------------------
 R2 minus out 9k
 R1 in minus 1k
-Vi in gnd DC 1V
-Xop1 gnd in out opampopenloop
-.tf V(out) Vi
-.PROBE
-*Vi in gnd SIN 0 1E-3 10
-*.op
+Vi in gnd AC 1 0
+Xop1 gnd minus out opampopenloop
+.AC dec 10 0.01 150MEG
+*.tf V(out) Vi
+*.PROBE
 *.tran 1ps 1s
+*.op
+*Vi plus gnd DC 1V
+*Vi plus gnd SIN 0 1E-3 10
 *.plot V(plus)-1.65 V(minus)-1.65
 .end

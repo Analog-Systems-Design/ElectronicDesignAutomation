@@ -1,0 +1,41 @@
+* chargeric.sp
+* HishamElreedy
+* Ideal Lithium-Ion Battery Charger
+
+*----------------------------------------------------------
+*	Parameters and Models
+*----------------------------------------------------------
+*	Mosfet Model
+*----------------------------------------------------------
+.model nm NMOS level=2 VT0=0.7 KP=80e-6 LAMBDA=0.01
+.model pm PMOS level=2 VT0=-0.7 KP=80e-6 LAMBDA=0.01
+*----------------------------------------------------------
+*	Battery Model
+*----------------------------------------------------------
+.subckt battery 1 2
+*Rcell	1		mid		2k
+*Ccell	mid		2		100f
+Ccell	1		2		100f
+.ENDS battery
+*----------------------------------------------------------
+* instruct HSPICE to write the results for use with a waveform viewer
+*.option post
+
+*----------------------------------------------------------
+*	Simulation Netlist
+*----------------------------------------------------------
+VDD		in		gnd		pulse	0 3.3V 100ps 150ps 150ps 1ns 1.5ns
+Vref	va2		gnd		DC		1.5V
+Iconst	ms	in	1A
+Mcharge	out	vaout	ms	in	pm w=3u L=3u
+R1		out	va1	1
+R2		va1 gnd 1
+E1 vaout gnd va1 va2 -1e6
+Xbat1 out gnd battery
+
+*---------------------------------------------------------
+*	Stimulus
+*---------------------------------------------------------
+.tran 0.1ns 1ns
+.plot v(in) v(out)
+.end
