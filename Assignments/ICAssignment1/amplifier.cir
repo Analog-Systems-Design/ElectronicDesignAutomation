@@ -13,12 +13,12 @@ C1 out gnd 3.97pf
 *-------------------------------------------------
 *	Requirement 2
 *-------------------------------------------------
-*Xop1 gnd minus out nonidealopamp
-*R1 in minus 1k
-*R2 minus out 9k
-*Vin in gnd 1V
-*.tf V(out) Vin
-*.probe
+Xop1 gnd minus out nonidealopamp
+R1 in minus 1k
+R2 minus out 9k
+Vin in gnd 1V
+.tf V(out) Vin
+.probe
 
 *-------------------------------------------------
 *	Requirement 3
@@ -45,8 +45,8 @@ C1 out gnd 3.97pf
 *-------------------------------------------------
 *	Requirement 6
 *-------------------------------------------------
-Vin in gnd AC 1 0 SIN 0 1V 10e3k
-.tran 1ps 0.1us
+*Vin in gnd AC 1 0 SIN 0 1V 10e3k
+*.tran 1ps 0.1us
 
 *-------------------------------------------------
 *	Requirement 7

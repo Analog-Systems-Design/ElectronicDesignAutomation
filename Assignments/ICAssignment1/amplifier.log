@@ -1,22 +1,22 @@
 Circuit: * Task 1
 
-WARNING: Less than two connections to node IN.  This node is used by VIN.
-.OP point found by inspection.
+Direct Newton iteration for .op point succeeded.
+Ignoring empty pin current: Ix(op1:plus)
+Ignoring empty pin current: Ix(op1:minus)
 
-Date: Sat Jan 23 11:15:46 2021
-Total elapsed time: 0.018 seconds.
+Date: Sat Jan 23 16:03:13 2021
+Total elapsed time: 0.132 seconds.
 
 tnom = 27
 temp = 27
-method = modified trap
-totiter = 2082
-traniter = 2082
-tranpoints = 1042
-accept = 1042
+method = trap
+totiter = 3
+traniter = 0
+tranpoints = 0
+accept = 0
 rejected = 0
-matrix size = 2
+matrix size = 6
 fillins = 0
 solver = Normal
-Matrix Compiler1: 18 bytes object code size  0.0/0.0/[0.0]
-Matrix Compiler2: off  [0.0]/0.0/0.0
-
+Matrix Compiler1: 200 bytes object code size
+Matrix Compiler2: 388 bytes object code size
