@@ -5,7 +5,7 @@
 *	Requirement 1
 *-----------------------------------------------
 .subckt nonidealopamp plus minus out
-E1 mid gnd plus minus 1e4
+E1 mid gnd plus minus 10
 R1 mid out 4k
 C1 out gnd 3.97pf
 .ENDS nonidealopamp
@@ -13,49 +13,55 @@ C1 out gnd 3.97pf
 *-------------------------------------------------
 *	Requirement 2
 *-------------------------------------------------
-Xop1 gnd minus out nonidealopamp
-R1 in minus 1k
-R2 minus out 9k
-Vin in gnd 1V
-.tf V(out) Vin
-.probe
+*Xop1 plus minus out nonidealopamp
+*R2 gnd minus 1k
+*R1 minus out 9k
+*Vin plus gnd 1V
+*.tf V(out) Vin
+*.probe
 
 *-------------------------------------------------
 *	Requirement 3
 *-------------------------------------------------
-*Xop1 gnd minus out nonidealopamp
-*R1 in minus 1k
-*R2 minus out 9k
-*Vin in gnd AC 1 0 SIN 0 1V 1k
+*Xop1 plus minus out nonidealopamp
+*R2 gnd minus 1k
+*R1 minus out 9k
+*Vin plus gnd SIN 0 1V 1k
 *.tran 200us 1ms
 
 *-------------------------------------------------
 *	Requirement 4
 *-------------------------------------------------
-
+*tabulate Question
 
 *-------------------------------------------------
 *	Requirement 5
 *-------------------------------------------------
-*Xop2 plus minus out nonidealopamp
-*Vin plus minus DC 0.5
-*R1 out gnd 1
-*.dc Vin -5 5 0.001
+*Xop1 plus minus out nonidealopamp
+*Vpl plus gnd sin 0 1V 1k 0 0 0 0
+*Vmin minus gnd sin 0 -1V 1k 0 0 0 0
+*.tran 200us 1ms
 
 *-------------------------------------------------
 *	Requirement 6
 *-------------------------------------------------
-*Vin in gnd AC 1 0 SIN 0 1V 10e3k
+*Xop2 plus minus out nonidealopamp
+*Vpl plus gnd SIN 0 1V 10E6
+*Vmin minus gnd SIN 0 -1V 10E6
 *.tran 1ps 0.1us
+
 
 *-------------------------------------------------
 *	Requirement 7
 *-------------------------------------------------
-*Xop2 plus minus out nonidealopamp
-*Vpos plus gnd AC 0.5
-*Vmin minus gnd AC -0.5
-*.AC dec 10 0.001 150MEG
-
+.param Rf 9k
+Xop1 plus minus out nonidealopamp
+R2 gnd minus 1k
+R1 minus out 'Rf'
+Vin plus gnd AC 1
+.PlOT AC V(out)
+.AC dec 10 0.001 150MEG
+.STEP PARAM Rf 500 9k 0.5k
 *-------------------------------------------------
 *	Requirement 8
 *-------------------------------------------------
@@ -64,6 +70,17 @@ Vin in gnd 1V
 *-------------------------------------------------
 *	Requirement 9
 *-------------------------------------------------
+*Xop1 plus minus out nonidealopamp
+*Vpl plus gnd AC 0.5
+*Vmi minus gnd AC -0.5
+*.PlOT AC V(out)
+*.AC dec 10 0.001 150MEG
 
 .end
+
+
+
+
+
+
 
